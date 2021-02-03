@@ -3,11 +3,12 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+//
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { Screen, Navigator } = createStackNavigator();
 
 export default function App() {
-  console.log(Math.random());
   return (
     <NavigationContainer>
       <Navigator initialRouteName='home'>
@@ -18,10 +19,38 @@ export default function App() {
   );
 }
 const Home = ({ navigation }) => {
+  const [test, setTest] = React.useState("not");
+
+  React.useEffect(() => {
+    storeData("works");
+  }, []);
+
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem("test", value);
+    } catch (e) {
+      // saving error
+      throw Error(e);
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("test");
+      if (value !== null) {
+        // value previously stored
+        setTest(value);
+      }
+    } catch (e) {
+      // error reading value
+      throw Error(e);
+    }
+  };
+
   return (
     <View style={{ marginTop: 44 }}>
-      <Text>Home</Text>
-      <Button title='Filters' onPress={() => navigation.navigate("filters")} />
+      <Text>Home {test}</Text>
+      <Button title='Filtersx' onPress={() => getData()} />
     </View>
   );
 };
