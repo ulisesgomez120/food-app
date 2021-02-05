@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 //
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { yelpCall } from "./yelpConfig";
 const { Screen, Navigator } = createStackNavigator();
 
 export default function App() {
@@ -18,11 +18,23 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
 const Home = ({ navigation }) => {
   const [test, setTest] = React.useState("not");
 
   React.useEffect(() => {
-    storeData("works");
+    // storeData("works");
+    yelpCall
+      .get("/businesses/search?", {
+        params: {
+          term: "food",
+          location: "Austin,TX",
+        },
+      })
+      .then((d) => console.log(d))
+      .catch((e) => {
+        throw Error(e);
+      });
   }, []);
 
   const storeData = async (value) => {
@@ -61,6 +73,7 @@ const Filters = ({ navigation }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
