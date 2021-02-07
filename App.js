@@ -21,6 +21,7 @@ export default function App() {
 
 const Home = ({ navigation }) => {
   const [test, setTest] = React.useState("not");
+  const [choices, setChoices] = React.useState([]);
 
   React.useEffect(() => {
     // storeData("works");
@@ -29,9 +30,14 @@ const Home = ({ navigation }) => {
         params: {
           term: "food",
           location: "Austin,TX",
+          limit: 50,
+          offset: 0,
         },
       })
-      .then((d) => console.log(d))
+      .then((d) => {
+        setChoices(d.data.businesses.splice(0, 3));
+        storeData(JSON.stringify(d.data.businesses));
+      })
       .catch((e) => {
         throw Error(e);
       });
@@ -39,7 +45,7 @@ const Home = ({ navigation }) => {
 
   const storeData = async (value) => {
     try {
-      await AsyncStorage.setItem("test", value);
+      await AsyncStorage.setItem("choices", value);
     } catch (e) {
       // saving error
       throw Error(e);
@@ -48,20 +54,27 @@ const Home = ({ navigation }) => {
 
   const getData = async () => {
     try {
-      const value = await AsyncStorage.getItem("test");
+      const value = await AsyncStorage.getItem("choices");
       if (value !== null) {
         // value previously stored
-        setTest(value);
+        console.log(JSON.parse(value));
+        setChoices(JSON.parse(value));
       }
     } catch (e) {
       // error reading value
       throw Error(e);
     }
   };
-
+  const choicesJsx = choices.map((choice) => {
+    return (
+      <View key={choice.id} style={styles.choice}>
+        <Text>{choice.name}</Text>
+      </View>
+    );
+  });
   return (
     <View style={{ marginTop: 44 }}>
-      <Text>Home {test}</Text>
+      <Text>Home </Text>
       <Button title='Filtersx' onPress={() => getData()} />
     </View>
   );
