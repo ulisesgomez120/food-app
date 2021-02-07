@@ -56,9 +56,10 @@ const Home = ({ navigation }) => {
     try {
       const value = await AsyncStorage.getItem("choices");
       if (value !== null) {
-        // value previously stored
-        console.log(JSON.parse(value));
-        setChoices(JSON.parse(value));
+        const parsedValue = JSON.parse(value);
+        const newChoices = parsedValue.splice(0, 3);
+        storeData(JSON.stringify(parsedValue));
+        return setChoices(newChoices);
       }
     } catch (e) {
       // error reading value
@@ -68,7 +69,22 @@ const Home = ({ navigation }) => {
   const choicesJsx = choices.map((choice) => {
     return (
       <View key={choice.id} style={styles.choice}>
-        <Text>{choice.name}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            let copy = [...choices];
+            copy.shift();
+            if (copy.length === 0) {
+              getData()
+                .then((res) => res)
+                .catch((e) => e);
+
+              return;
+            }
+            setChoices(copy);
+            return copy;
+          }}>
+          <Text>{choice.name}</Text>
+        </TouchableOpacity>
       </View>
     );
   });
@@ -76,6 +92,7 @@ const Home = ({ navigation }) => {
     <View style={{ marginTop: 44 }}>
       <Text>Home </Text>
       <Button title='Filtersx' onPress={() => getData()} />
+      {choicesJsx}
     </View>
   );
 };
