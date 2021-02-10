@@ -13,6 +13,7 @@ export default Home = ({ navigation }) => {
     location: "Austin,TX",
     limit: 3,
     offset: 0,
+    open_now: true,
   };
   React.useEffect(() => {
     //convert to async function
@@ -48,9 +49,7 @@ export default Home = ({ navigation }) => {
     });
     const resolved = Promise.all(all)
       .then((val) => {
-        console.log("start", val.flat());
         let shuf = shuffleArray(val.flat());
-        console.log("shuf", shuf);
       })
       .catch((e) => {
         throw Error(e);
