@@ -16,13 +16,22 @@ export default Home = ({ navigation }) => {
   const [choices, setChoices] = React.useState([]);
   const [status, setStatus] = React.useState("idle");
   const [filters, setFilters] = React.useState(["sushi", "mexican"]);
+  const [location, setLocation] = React.useState(() => {
+    // lazy load location
+    return "austin,tx";
+  });
 
   let searchParams = {
     term: "food",
-    location: "Austin,TX",
     limit: 3,
     offset: 0,
     open_now: true,
+  };
+  const formatLocation = () => {
+    if (typeof location === "string") {
+      return { location };
+    }
+    return { lat: location.lat, long: location.long };
   };
   // React.useEffect(() => {
   //   //convert to async function
@@ -30,13 +39,13 @@ export default Home = ({ navigation }) => {
   // }, [filters]);
 
   const getResturants = async () => {
+    const loc = formatLocation();
     if (filters.length === 0) {
       yelpCall
         .get("/businesses/search?", {
-          params: { ...searchParams },
+          params: { ...searchParams, ...loc },
         })
         .then((d) => {
-          console.log(d);
           setChoices(d.data.businesses.splice(0, 3));
           storeData(JSON.stringify(d.data.businesses));
         })
@@ -46,7 +55,7 @@ export default Home = ({ navigation }) => {
       return;
     }
     let all = filters.map((term) => {
-      let filterParams = { ...searchParams, term };
+      let filterParams = { ...searchParams, ...loc, term };
       return yelpCall
         .get("/businesses/search?", {
           params: filterParams,
@@ -123,20 +132,19 @@ export default Home = ({ navigation }) => {
 
 const LocationInput = (props) => {
   const [location, setLocation] = React.useState("");
+  const inputRef = React.createRef();
   return (
     <KeyboardAvoidingView
       style={styles.kbavoid}
       keyboardVerticalOffset={64}
       behavior={Platform.OS == "ios" ? "padding" : "height"}>
       <TextInput
+        ref={inputRef}
+        defaultValue='k'
         style={{ backgroundColor: "blue", alignSelf: "stretch", height: 50 }}
-        value={location}
-        onChangeText={(text) => setLocation(text)}
-        onKeyPress={({ nativeEvent: { key: keyValue } }) =>
-          console.log(keyValue)
-        }
+        onChangeText={(text) => (inputRef.current.value = text)}
+        onSubmitEditing={() => console.log(inputRef.current.value)}
       />
-      <Button title='Submit' />
     </KeyboardAvoidingView>
   );
 };
