@@ -1,7 +1,16 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Button,
+  KeyboardAvoidingView,
+  SafeAreaView,
+} from "react-native";
 import { yelpCall } from "../yelpConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { TextInput } from "react-native-gesture-handler";
 
 export default Home = ({ navigation }) => {
   const [choices, setChoices] = React.useState([]);
@@ -15,10 +24,10 @@ export default Home = ({ navigation }) => {
     offset: 0,
     open_now: true,
   };
-  React.useEffect(() => {
-    //convert to async function
-    getResturants();
-  }, [filters]);
+  // React.useEffect(() => {
+  //   //convert to async function
+  //   getResturants();
+  // }, [filters]);
 
   const getResturants = async () => {
     if (filters.length === 0) {
@@ -47,7 +56,7 @@ export default Home = ({ navigation }) => {
           throw Error(e);
         });
     });
-    const resolved = Promise.all(all)
+    return Promise.all(all)
       .then((val) => {
         let shuf = shuffleArray(val.flat());
       })
@@ -105,15 +114,41 @@ export default Home = ({ navigation }) => {
     );
   });
   return (
-    <View style={{ marginTop: 44 }}>
-      <Text>Home </Text>
-      {choicesJsx}
-    </View>
+    <SafeAreaView style={{ marginTop: 50, flex: 1 }}>
+      <View style={{ flex: 3, backgroundColor: "red" }}>{choicesJsx}</View>
+      <LocationInput />
+    </SafeAreaView>
+  );
+};
+
+const LocationInput = (props) => {
+  const [location, setLocation] = React.useState("");
+  return (
+    <KeyboardAvoidingView
+      style={styles.kbavoid}
+      keyboardVerticalOffset={64}
+      behavior={Platform.OS == "ios" ? "padding" : "height"}>
+      <TextInput
+        style={{ backgroundColor: "blue", alignSelf: "stretch", height: 50 }}
+        value={location}
+        onChangeText={(text) => setLocation(text)}
+        onKeyPress={({ nativeEvent: { key: keyValue } }) =>
+          console.log(keyValue)
+        }
+      />
+      <Button title='Submit' />
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   choice: {
     backgroundColor: "pink",
+  },
+  kbavoid: {
+    paddingVertical: 12,
+    flex: 0.3,
+    backgroundColor: "gold",
+    // alignSelf: "flex-end",
   },
 });
