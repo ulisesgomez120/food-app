@@ -10,17 +10,12 @@ import {
 } from "react-native";
 import { yelpCall } from "../yelpConfig";
 import { getData, storeData, shuffleArray } from "../util";
-import LocationInput from "../Components/LocationInput";
+import LocationInput from "../components/LocationInput";
 
 export default Home = ({ navigation }) => {
-  const getLocation = async () => {
-    const loc = await getData("location");
-    return loc || "Austin,TX";
-  };
   const [choices, setChoices] = React.useState([]);
   const [status, setStatus] = React.useState("idle");
   const [filters, setFilters] = React.useState(["sushi", "mexican"]);
-  const [location, setLocation] = React.useState(getLocation);
 
   let searchParams = {
     term: "food",
@@ -28,19 +23,20 @@ export default Home = ({ navigation }) => {
     offset: 0,
     open_now: true,
   };
-  const formatLocation = () => {
-    if (typeof location === "string") {
-      return { location };
-    }
-    return { lat: location.lat, long: location.long };
-  };
+  // const formatLocation = () => {
+  //   if (typeof location === "string") {
+  //     return { location };
+  //   }
+  //   return { lat: location.lat, long: location.long };
+  // };
+
   // React.useEffect(() => {
   //   //convert to async function
   //   getResturants();
   // }, [filters]);
 
   const getResturants = async () => {
-    const loc = formatLocation();
+    // const loc = formatLocation();
     if (filters.length === 0) {
       yelpCall
         .get("/businesses/search?", {
@@ -123,12 +119,18 @@ export default Home = ({ navigation }) => {
       </View>
     );
   });
-  console.log(location, "home");
+
   return (
     <SafeAreaView style={{ marginTop: 50, flex: 1 }}>
       <View style={{ flex: 3, backgroundColor: "red" }}>{choicesJsx}</View>
-
-      <LocationInput setLocation={setLocation} />
+      {/* <Text>{location}</Text>
+      <TouchableOpacity onPress={() => storeData("location", "fill")}>
+        <Text>fill</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => getData("location", setLocation)}>
+        <Text>get</Text>
+      </TouchableOpacity> */}
+      {/* <LocationInput setLocation={setLocation} /> */}
     </SafeAreaView>
   );
 };
