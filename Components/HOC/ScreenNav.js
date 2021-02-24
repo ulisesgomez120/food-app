@@ -3,21 +3,23 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Home from "./pages/Home";
-import Onboarding from "./pages/Onboarding";
+import Home from "../../pages/Home";
+import Onboarding from "../../pages/Onboarding";
 import * as SplashScreen from "expo-splash-screen";
-import { getData } from "./util";
+import { getData } from "../../util";
 import {
-  LocationProvider,
   useLocationDispatch,
   getLocation,
   useLocationState,
-} from "./context/location-context";
+} from "../../context/location-context";
 
 const { Screen, Navigator } = createStackNavigator();
 
 export default function ScreenNav() {
   const [initialRoute, setInitialRoute] = React.useState("onboarding");
+  const locDispatch = useLocationDispatch();
+  const locState = useLocationState();
+
   const preventSplash = async () => {
     try {
       await SplashScreen.preventAutoHideAsync()
@@ -28,12 +30,12 @@ export default function ScreenNav() {
     }
     const completedOnboarding = await getData("completedOnboarding");
     console.log(completedOnboarding);
-    if (completedOnboarding !== null) {
+    if (completedOnboarding === null) {
       setInitialRoute("home");
-      // get location data
+      getLocation(locDispatch);
       SplashScreen.hideAsync();
     } else {
-      // SplashScreen.hideAsync();
+      SplashScreen.hideAsync();
     }
   };
   React.useEffect(() => {
@@ -41,23 +43,17 @@ export default function ScreenNav() {
   });
 
   return (
-    <LocationProvider>
-      <NavigationContainer>
-        <Navigator initialRouteName={initialRoute}>
-          <Screen
-            name='onboarding'
-            component={Onboarding}
-            options={{ headerShown: false }}
-          />
-          <Screen
-            name='home'
-            component={Home}
-            options={{ headerShown: false }}
-          />
-          <Screen name='filters' component={Filters} />
-        </Navigator>
-      </NavigationContainer>
-    </LocationProvider>
+    <NavigationContainer>
+      <Navigator initialRouteName={initialRoute}>
+        <Screen
+          name='onboarding'
+          component={Onboarding}
+          options={{ headerShown: false }}
+        />
+        <Screen name='home' component={Home} options={{ headerShown: false }} />
+        <Screen name='filters' component={Filters} />
+      </Navigator>
+    </NavigationContainer>
   );
 }
 

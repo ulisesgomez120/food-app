@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { yelpCall } from "../yelpConfig";
 import { getData, storeData, shuffleArray } from "../util";
-import LocationInput from "../Components/LocationInput";
+import LocationInput from "../components/LocationInput";
 
 const Screens = () => {
   return <View style={styles.containerS}></View>;
