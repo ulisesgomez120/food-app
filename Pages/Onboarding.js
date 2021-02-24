@@ -9,18 +9,47 @@ import {
   SafeAreaView,
 } from "react-native";
 import { yelpCall } from "../yelpConfig";
-import { getData, storeData, shuffleArray } from "../util";
 import LocationInput from "../components/LocationInput";
+import * as SplashScreen from "expo-splash-screen";
+import { getData } from "../util";
+import {
+  useLocationDispatch,
+  getLocation,
+  useLocationState,
+} from "../context/location-context";
 
-const Screens = () => {
-  return <View style={styles.containerS}></View>;
-};
-const Onboarding = () => {
+const Onboarding = ({ navigation }) => {
+  const locDispatch = useLocationDispatch();
+  const locState = useLocationState();
+
+  const preventSplash = async () => {
+    try {
+      await SplashScreen.preventAutoHideAsync()
+        .then((res) => res)
+        .catch((err) => console.log(err));
+    } catch (error) {
+      console.log(error);
+    }
+    const completedOnboarding = await getData("completedOnboarding");
+    if (completedOnboarding === null) {
+      getLocation(locDispatch);
+      navigation.navigate("home");
+      SplashScreen.hideAsync();
+    } else {
+      SplashScreen.hideAsync();
+    }
+  };
+  React.useEffect(() => {
+    preventSplash();
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <Screens></Screens>
     </SafeAreaView>
   );
+};
+const Screens = () => {
+  return <View style={styles.containerS}></View>;
 };
 
 const styles = StyleSheet.create({

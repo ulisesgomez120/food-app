@@ -17,34 +17,34 @@ const { Screen, Navigator } = createStackNavigator();
 
 export default function ScreenNav() {
   const [initialRoute, setInitialRoute] = React.useState("onboarding");
-  const locDispatch = useLocationDispatch();
-  const locState = useLocationState();
+  // const locDispatch = useLocationDispatch();
+  // const locState = useLocationState();
 
-  const preventSplash = async () => {
-    try {
-      await SplashScreen.preventAutoHideAsync()
-        .then((res) => res)
-        .catch((err) => console.log(err));
-    } catch (error) {
-      console.log(error);
-    }
-    const completedOnboarding = await getData("completedOnboarding");
-    console.log(completedOnboarding);
-    if (completedOnboarding === null) {
-      setInitialRoute("home");
-      getLocation(locDispatch);
-      SplashScreen.hideAsync();
-    } else {
-      SplashScreen.hideAsync();
-    }
-  };
-  React.useEffect(() => {
-    preventSplash();
-  });
+  // const preventSplash = async () => {
+  //   try {
+  //     await SplashScreen.preventAutoHideAsync()
+  //       .then((res) => res)
+  //       .catch((err) => console.log(err));
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  //   const completedOnboarding = await getData("completedOnboarding");
+  //   if (completedOnboarding === null) {
+  //     console.log("k");
+  //     getLocation(locDispatch);
+  //     nav.navigate("home");
+  //     SplashScreen.hideAsync();
+  //   } else {
+  //     SplashScreen.hideAsync();
+  //   }
+  // };
+  // React.useEffect(() => {
+  //   preventSplash();
+  // }, []);
 
   return (
     <NavigationContainer>
-      <Navigator initialRouteName={initialRoute}>
+      <Navigator initialRouteName='onboarding'>
         <Screen
           name='onboarding'
           component={Onboarding}

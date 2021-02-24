@@ -11,12 +11,13 @@ import {
 import { yelpCall } from "../yelpConfig";
 import { getData, storeData, shuffleArray } from "../util";
 import LocationInput from "../components/LocationInput";
+import { LocationState, useLocationState } from "../context/location-context";
 
 export default Home = ({ navigation }) => {
   const [choices, setChoices] = React.useState([]);
   const [status, setStatus] = React.useState("idle");
   const [filters, setFilters] = React.useState(["sushi", "mexican"]);
-
+  const locState = useLocationState();
   let searchParams = {
     term: "food",
     limit: 3,
@@ -122,9 +123,9 @@ export default Home = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ marginTop: 50, flex: 1 }}>
-      <View style={{ flex: 3, backgroundColor: "red" }}>{choicesJsx}</View>
-      {/* <Text>{location}</Text>
-      <TouchableOpacity onPress={() => storeData("location", "fill")}>
+      <View style={{ flex: 3, backgroundColor: "seagreen" }}>{choicesJsx}</View>
+      <Text>{locState}</Text>
+      {/* <TouchableOpacity onPress={() => storeData("location", "fill")}>
         <Text>fill</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => getData("location", setLocation)}>
