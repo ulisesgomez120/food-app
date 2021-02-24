@@ -17,11 +17,13 @@ import {
   getLocation,
   useLocationState,
 } from "../context/location-context";
+import { createStackNavigator } from "@react-navigation/stack";
+
+const onboardingNav = createStackNavigator();
 
 const Onboarding = ({ navigation }) => {
   const locDispatch = useLocationDispatch();
   const locState = useLocationState();
-
   const preventSplash = async () => {
     try {
       await SplashScreen.preventAutoHideAsync()
@@ -31,25 +33,54 @@ const Onboarding = ({ navigation }) => {
       console.log(error);
     }
     const completedOnboarding = await getData("completedOnboarding");
-    if (completedOnboarding === null) {
+    if (completedOnboarding !== null) {
       getLocation(locDispatch);
+      console.log("here ");
       navigation.navigate("home");
       SplashScreen.hideAsync();
     } else {
       SplashScreen.hideAsync();
     }
   };
+
   React.useEffect(() => {
     preventSplash();
   }, []);
   return (
+    <onboardingNav.Navigator>
+      <onboardingNav.Screen
+        name='welcome'
+        component={WelcomeOnB}
+        options={{ headerShown: false }}
+      />
+      <onboardingNav.Screen
+        name='enterLocation'
+        component={EnterLocation}
+        options={{ headerShown: false }}
+      />
+    </onboardingNav.Navigator>
+  );
+};
+const WelcomeOnB = ({ navigation }) => {
+  return (
     <SafeAreaView style={styles.container}>
-      <Screens></Screens>
+      <Text> WElCOME</Text>
+      <Button
+        title='next'
+        onPress={() => navigation.navigate("enterLocation")}></Button>
     </SafeAreaView>
   );
 };
-const Screens = () => {
-  return <View style={styles.containerS}></View>;
+const EnterLocation = ({ navigation }) => {
+  return (
+    <SafeAreaView style={styles.containerS}>
+      <Text> LOCATION </Text>
+      <Button
+        title='complete'
+        onPress={() => navigation.navigate("home")}></Button>
+      <Button title='back' onPress={() => navigation.goBack()}></Button>
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({
