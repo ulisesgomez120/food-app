@@ -10,15 +10,17 @@ import {
 } from "react-native";
 import { yelpCall } from "../yelpConfig";
 import LocationInput from "../components/LocationInput";
+import CurrentLocationButton from "../components/CurrentLocationButton";
 import * as SplashScreen from "expo-splash-screen";
 import { getData } from "../util";
 import {
   useLocationDispatch,
-  getLocation,
+  getLocationLocal,
   useLocationState,
 } from "../context/location-context";
 import { createStackNavigator } from "@react-navigation/stack";
 
+import { getAll } from "../util";
 const onboardingNav = createStackNavigator();
 
 const Onboarding = ({ navigation }) => {
@@ -34,7 +36,7 @@ const Onboarding = ({ navigation }) => {
     }
     const completedOnboarding = await getData("completedOnboarding");
     if (completedOnboarding !== null) {
-      getLocation(locDispatch);
+      getLocationLocal(locDispatch);
       console.log("here ");
       navigation.navigate("home");
       SplashScreen.hideAsync();
@@ -65,6 +67,7 @@ const WelcomeOnB = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text> WElCOME</Text>
+      <Button title='keys' onPress={() => getAll()}></Button>
       <Button
         title='next'
         onPress={() => navigation.navigate("enterLocation")}></Button>
@@ -75,10 +78,11 @@ const EnterLocation = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.containerS}>
       <Text> LOCATION </Text>
+      <LocationInput />
+      <CurrentLocationButton />
       <Button
         title='complete'
         onPress={() => navigation.navigate("home")}></Button>
-      <Button title='back' onPress={() => navigation.goBack()}></Button>
     </SafeAreaView>
   );
 };
@@ -90,7 +94,7 @@ const styles = StyleSheet.create({
   },
   containerS: {
     flex: 1,
-    backgroundColor: "red",
+    backgroundColor: "goldenrod",
   },
 });
 

@@ -11,33 +11,40 @@ import {
 import { yelpCall } from "../yelpConfig";
 import { getData, storeData, shuffleArray } from "../util";
 import LocationInput from "../components/LocationInput";
-import { LocationState, useLocationState } from "../context/location-context";
+import {
+  useLocationState,
+  useLocationDispatch,
+} from "../context/location-context";
 
 export default Home = ({ navigation }) => {
   const [choices, setChoices] = React.useState([]);
   const [status, setStatus] = React.useState("idle");
   const [filters, setFilters] = React.useState(["sushi", "mexican"]);
   const locState = useLocationState();
+
   let searchParams = {
     term: "food",
     limit: 3,
     offset: 0,
     open_now: true,
   };
-  // const formatLocation = () => {
-  //   if (typeof location === "string") {
-  //     return { location };
-  //   }
-  //   return { lat: location.lat, long: location.long };
-  // };
+  const formatLocation = () => {
+    if (typeof locState === "string") {
+      return { locState };
+    }
+    return { lat: locState.latitude, long: locState.longitude };
+  };
 
   // React.useEffect(() => {
   //   //convert to async function
   //   getResturants();
   // }, [filters]);
-
+  React.useEffect(() => {
+    // getResturants();
+    console.log("locstate");
+  }, [locState]);
   const getResturants = async () => {
-    // const loc = formatLocation();
+    const loc = formatLocation();
     if (filters.length === 0) {
       yelpCall
         .get("/businesses/search?", {
@@ -66,6 +73,7 @@ export default Home = ({ navigation }) => {
     return Promise.all(all)
       .then((val) => {
         let shuf = shuffleArray(val.flat());
+        console.log(shuf);
       })
       .catch((e) => {
         throw Error(e);
@@ -124,14 +132,14 @@ export default Home = ({ navigation }) => {
   return (
     <SafeAreaView style={{ marginTop: 50, flex: 1 }}>
       <View style={{ flex: 3, backgroundColor: "seagreen" }}>{choicesJsx}</View>
-      <Text>{locState}</Text>
-      {/* <TouchableOpacity onPress={() => storeData("location", "fill")}>
+      <Text>{JSON.stringify(locState)}</Text>
+      <TouchableOpacity onPress={() => navigation.navigate("onboarding")}>
         <Text>fill</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => getData("location", setLocation)}>
+      {/* <TouchableOpacity onPress={() => getData("location", setLocation)}>
         <Text>get</Text>
       </TouchableOpacity> */}
-      {/* <LocationInput setLocation={setLocation} /> */}
+      <LocationInput />
     </SafeAreaView>
   );
 };

@@ -1,11 +1,11 @@
 import React from "react";
-import { getData } from "../util";
+import { getData, storeData } from "../util";
 
 const LocationState = React.createContext();
 const LocationDispatch = React.createContext();
 
 const LocationProvider = ({ children }) => {
-  const [state, dispatch] = React.useState("austin.tx");
+  const [state, dispatch] = React.useState("");
   return (
     <LocationState.Provider value={state}>
       <LocationDispatch.Provider value={dispatch}>
@@ -33,15 +33,17 @@ const useLocationDispatch = () => {
   return context;
 };
 
-const getLocation = async (dispatch) => {
+const getLocationLocal = async (dispatch) => {
   const location = await getData("location", dispatch);
   return location;
 };
-const setLocation = async () => {};
+const setLocationLocal = async (location) => {
+  storeData("location", location);
+};
 export {
   LocationProvider,
   useLocationDispatch,
   useLocationState,
-  getLocation,
-  setLocation,
+  getLocationLocal,
+  setLocationLocal,
 };

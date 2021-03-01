@@ -2,10 +2,17 @@
 import React from "react";
 import { StyleSheet, KeyboardAvoidingView } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-
-const LocationInput = ({ setLocation }) => {
+import {
+  setLocationLocal,
+  useLocationDispatch,
+} from "../context/location-context";
+const LocationInput = () => {
   const inputRef = React.createRef();
-
+  const setLoc = useLocationDispatch();
+  const handleLocationSubmit = (text) => {
+    setLoc(text);
+    setLocationLocal(text);
+  };
   return (
     <KeyboardAvoidingView
       style={styles.kbavoid}
@@ -15,7 +22,7 @@ const LocationInput = ({ setLocation }) => {
         ref={inputRef}
         style={{ backgroundColor: "blue", alignSelf: "stretch", height: 50 }}
         onChangeText={(text) => (inputRef.current.value = text)}
-        onSubmitEditing={() => setLocation(inputRef.current.value)}
+        onSubmitEditing={() => handleLocationSubmit(inputRef.current.value)}
       />
     </KeyboardAvoidingView>
   );
