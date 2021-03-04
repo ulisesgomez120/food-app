@@ -35,10 +35,6 @@ export default Home = ({ navigation }) => {
     return { lat: locState.latitude, long: locState.longitude };
   };
 
-  // React.useEffect(() => {
-  //   //convert to async function
-  //   getResturants();
-  // }, [filters]);
   React.useEffect(() => {
     // getResturants();
     console.log("locstate");

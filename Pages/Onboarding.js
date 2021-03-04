@@ -12,7 +12,7 @@ import { yelpCall } from "../yelpConfig";
 import LocationInput from "../components/LocationInput";
 import CurrentLocationButton from "../components/CurrentLocationButton";
 import * as SplashScreen from "expo-splash-screen";
-import { getData } from "../util";
+import { getData, storeData } from "../util";
 import {
   useLocationDispatch,
   getLocationLocal,
@@ -25,7 +25,6 @@ const onboardingNav = createStackNavigator();
 
 const Onboarding = ({ navigation }) => {
   const locDispatch = useLocationDispatch();
-  const locState = useLocationState();
   const preventSplash = async () => {
     try {
       await SplashScreen.preventAutoHideAsync()
@@ -37,7 +36,7 @@ const Onboarding = ({ navigation }) => {
     const completedOnboarding = await getData("completedOnboarding");
     if (completedOnboarding !== null) {
       getLocationLocal(locDispatch);
-      console.log("here ");
+      console.log("completedOnboarding ln39 ");
       navigation.navigate("home");
       SplashScreen.hideAsync();
     } else {
@@ -48,6 +47,7 @@ const Onboarding = ({ navigation }) => {
   React.useEffect(() => {
     preventSplash();
   }, []);
+
   return (
     <onboardingNav.Navigator>
       <onboardingNav.Screen
@@ -82,7 +82,10 @@ const EnterLocation = ({ navigation }) => {
       <CurrentLocationButton />
       <Button
         title='complete'
-        onPress={() => navigation.navigate("home")}></Button>
+        onPress={() => {
+          storeData("completedOnboarding", true);
+          navigation.navigate("home");
+        }}></Button>
     </SafeAreaView>
   );
 };
