@@ -11,10 +11,7 @@ import {
 import { yelpCall } from "../yelpConfig";
 import { getData, storeData, shuffleArray } from "../util";
 import LocationInput from "../components/LocationInput";
-import {
-  useLocationState,
-  useLocationDispatch,
-} from "../context/location-context";
+import { useLocationState } from "../context/location-context";
 
 export default Home = ({ navigation }) => {
   const [choices, setChoices] = React.useState([]);
@@ -130,7 +127,7 @@ export default Home = ({ navigation }) => {
       <View style={{ flex: 3, backgroundColor: "seagreen" }}>{choicesJsx}</View>
       <Text>{JSON.stringify(locState)}</Text>
       <TouchableOpacity onPress={() => navigation.navigate("onboarding")}>
-        <Text>fill</Text>
+        <Text>onboarding</Text>
       </TouchableOpacity>
       {/* <TouchableOpacity onPress={() => getData("location", setLocation)}>
         <Text>get</Text>
